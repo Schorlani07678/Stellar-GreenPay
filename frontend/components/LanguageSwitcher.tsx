@@ -7,6 +7,7 @@ const LOCALES = [
   { code: "en" as const, label: "English", flag: "🇺🇸" },
   { code: "es" as const, label: "Español", flag: "🇪🇸" },
   { code: "fr" as const, label: "Français", flag: "🇫🇷" },
+  { code: "pt-BR" as const, label: "Português (Brasil)", flag: "🇧🇷" },
 ];
 
 export default function LanguageSwitcher() {

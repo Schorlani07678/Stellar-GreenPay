@@ -97,6 +97,7 @@ describe("isLocale", () => {
     expect(isLocale("en")).toBe(true);
     expect(isLocale("es")).toBe(true);
     expect(isLocale("fr")).toBe(true);
+    expect(isLocale("pt-BR")).toBe(true);
     expect(isLocale("de")).toBe(false);
     expect(isLocale("")).toBe(false);
     expect(isLocale(undefined)).toBe(false);
