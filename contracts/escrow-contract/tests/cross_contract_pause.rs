@@ -11,9 +11,8 @@
 // flag is required to compile or execute this suite.
 
 use soroban_sdk::{
-    testutils::{Address as _, Ledger as _},
-    token::StellarAssetClient,
-    Address, BytesN, Env, String as SorobanString, Vec,
+    testutils::Address as _, token::StellarAssetClient, Address, BytesN, Env,
+    String as SorobanString, Vec,
 };
 
 use escrow_contract::{EscrowContract, EscrowContractClient, JobStatus, Milestone};
