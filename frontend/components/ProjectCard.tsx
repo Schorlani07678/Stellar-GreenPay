@@ -84,7 +84,7 @@ export default function ProjectCard({ project }: { project: ClimateProject }) {
             </div>
           ) : null}
 
-          <p className="text-[#5a7a5a] dark:text-[#8aaa8a] text-sm leading-relaxed line-clamp-3 mb-4 flex-1 font-body">
+          <p className="text-[var(--text-secondary)] dark:text-[#8aaa8a] text-sm leading-relaxed line-clamp-3 mb-4 flex-1 font-body">
             {project.description}
           </p>
 

@@ -31,9 +31,10 @@ import {
 import en from "@/locales/en.json";
 import es from "@/locales/es.json";
 import fr from "@/locales/fr.json";
+import ptBR from "@/locales/pt-BR.json";
 import { setFormattingLocale } from "./formatLocale";
 
-export const SUPPORTED_LOCALES = ["en", "es", "fr"] as const;
+export const SUPPORTED_LOCALES = ["en", "es", "fr", "pt-BR"] as const;
 export type Locale = (typeof SUPPORTED_LOCALES)[number];
 
 export const DEFAULT_LOCALE: Locale = "en";
@@ -43,7 +44,7 @@ export const LOCALE_STORAGE_KEY = "greenpay:locale";
 /** Key used before the `greenpay:` namespace was introduced (#1073). */
 const LEGACY_LOCALE_STORAGE_KEY = "locale";
 
-const locales: Record<Locale, Record<string, any>> = { en, es, fr };
+const locales: Record<Locale, Record<string, any>> = { en, es, fr, "pt-BR": ptBR };
 
 interface I18nContextValue {
   locale: Locale;
@@ -117,6 +118,14 @@ export function detectBrowserLocale(): Locale {
 
   for (const candidate of candidates) {
     if (typeof candidate !== "string") continue;
+
+    // Full tags come first so hyphenated locales such as `pt-BR` match;
+    // the 2-letter fallback below keeps `en-US` -> `en` behaviour.
+    const exact = SUPPORTED_LOCALES.find(
+      (l) => l.toLowerCase() === candidate.toLowerCase(),
+    );
+    if (exact) return exact;
+
     const base = candidate.slice(0, 2).toLowerCase();
     if (isLocale(base)) return base;
   }

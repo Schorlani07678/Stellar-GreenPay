@@ -37,6 +37,7 @@ describe("LanguageSwitcher", () => {
     expect(select).toHaveTextContent(/English/);
     expect(select).toHaveTextContent(/Español/);
     expect(select).toHaveTextContent(/Français/);
+    expect(select).toHaveTextContent(/Português \(Brasil\)/);
   });
 
   it("saves the picked locale under the namespaced key", () => {
@@ -57,6 +58,26 @@ describe("LanguageSwitcher", () => {
     fireEvent.change(screen.getByLabelText("Language"), { target: { value: "es" } });
     expect(screen.getByLabelText("Language")).toHaveValue("es");
     expect(localStorage.getItem(LOCALE_STORAGE_KEY)).toBe("es");
+  });
+
+  it("selects, saves and applies pt-BR (hyphenated locale code)", () => {
+    renderSwitcher();
+    fireEvent.change(screen.getByLabelText("Language"), { target: { value: "pt-BR" } });
+
+    expect(screen.getByLabelText("Language")).toHaveValue("pt-BR");
+    expect(localStorage.getItem(LOCALE_STORAGE_KEY)).toBe("pt-BR");
+    expect(document.documentElement.lang).toBe("pt-BR");
+  });
+
+  it("comes back pre-selected as pt-BR after a reload", () => {
+    // The isLocale guard must accept the hyphenated code on read-back.
+    localStorage.setItem(LOCALE_STORAGE_KEY, "pt-BR");
+
+    renderSwitcher();
+
+    fireEvent.change(screen.getByLabelText("Language"), { target: { value: "pt-BR" } });
+    expect(screen.getByLabelText("Language")).toHaveValue("pt-BR");
+    expect(localStorage.getItem(LOCALE_STORAGE_KEY)).toBe("pt-BR");
   });
 
   it("starts from the saved preference rather than the browser default", () => {

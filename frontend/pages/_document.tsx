@@ -49,7 +49,7 @@ class MyDocument extends Document<Props> {
           <script
             nonce={nonce}
             dangerouslySetInnerHTML={{
-              __html: `(function(){try{var k="greenpay:locale";var legacy="locale";var supported=["en","es","fr"];var v=null;try{v=window.localStorage.getItem(k);if(supported.indexOf(v)<0){var l=window.localStorage.getItem(legacy);if(supported.indexOf(l)>=0){v=l;window.localStorage.setItem(k,l);window.localStorage.removeItem(legacy)}else{v=null}}}catch(e){v=null}if(supported.indexOf(v)<0){var c=(window.navigator.languages||[]).concat(window.navigator.language);v="en";for(var i=0;i<c.length;i++){var b=String(c[i]||"").slice(0,2).toLowerCase();if(supported.indexOf(b)>=0){v=b;break}}}document.documentElement.lang=v}catch(e){}})();`,
+              __html: `(function(){try{var k="greenpay:locale";var legacy="locale";var supported=["en","es","fr","pt-BR"];var v=null;try{v=window.localStorage.getItem(k);if(supported.indexOf(v)<0){var l=window.localStorage.getItem(legacy);if(supported.indexOf(l)>=0){v=l;window.localStorage.setItem(k,l);window.localStorage.removeItem(legacy)}else{v=null}}}catch(e){v=null}if(supported.indexOf(v)<0){var c=(window.navigator.languages||[]).concat(window.navigator.language);v="en";for(var i=0;i<c.length;i++){var b=String(c[i]||"").slice(0,2).toLowerCase();if(supported.indexOf(b)>=0){v=b;break}}}document.documentElement.lang=v}catch(e){}})();`,
             }}
           />
           <script
