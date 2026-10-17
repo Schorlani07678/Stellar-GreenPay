@@ -62,6 +62,38 @@ export function normalizeXLMAmount(amount: number | string): string {
 }
 
 /**
+ * Format an XLM amount into an approximate fiat currency equivalent (USD, EUR, BRL).
+ *
+ * @param xlmAmount - Amount in XLM.
+ * @param rate - Current XLM→Fiat rate; when null/zero, returns null.
+ * @param currency - Target fiat currency code ("USD" | "EUR" | "BRL").
+ * @param locale - Formatting locale.
+ * @returns A string like `"≈ $12.34 USD"`, `"≈ €11.35 EUR"`, or `"≈ R$ 67.89 BRL"`.
+ */
+export function formatFiatEquivalent(
+  xlmAmount: string | number,
+  rate: number | null,
+  currency: "USD" | "EUR" | "BRL" = "USD",
+  locale?: string,
+): string | null {
+  if (rate === null || rate <= 0) return null;
+  const n = typeof xlmAmount === "string" ? parseFloat(xlmAmount) : xlmAmount;
+  if (isNaN(n) || !isFinite(n)) return null;
+  const fiatVal = n * rate;
+  const formatted = formatAmount(fiatVal, 2, locale);
+
+  switch (currency) {
+    case "EUR":
+      return `≈ €${formatted} EUR`;
+    case "BRL":
+      return `≈ R$ ${formatted} BRL`;
+    case "USD":
+    default:
+      return `≈ $${formatted} USD`;
+  }
+}
+
+/**
  * Convert an XLM amount into an approximate USD string.
  *
  * @param xlmAmount - Amount in XLM.
@@ -74,11 +106,7 @@ export function formatUSDEquivalent(
   price: number | null,
   locale?: string,
 ): string | null {
-  if (price === null) return null;
-  const n = typeof xlmAmount === "string" ? parseFloat(xlmAmount) : xlmAmount;
-  if (isNaN(n)) return null;
-  const usd = n * price;
-  return `≈ $${formatAmount(usd, 2, locale)} USD`;
+  return formatFiatEquivalent(xlmAmount, price, "USD", locale);
 }
 
 /**

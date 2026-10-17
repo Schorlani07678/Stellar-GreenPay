@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Right-to-left (RTL) layout support for Arabic (`ar`) and Hebrew (`he`) with dynamic `dir="rtl"` attribute on `<html>`, logical CSS property helpers, and full Arabic (`ar.json`) translations covering navigation and donation flows (#1318).
+- Discord (`#greenpay`) and Telegram community channels in `README.md`, website footer, and README badges (#1319).
+- Hacktoberfest onboarding guide and catalog of 22 beginner and intermediate issues labeled `hacktoberfest` in `CONTRIBUTING.md` and `.github/hacktoberfest-issues.json` (#1321).
 - Configurable CPU/memory requests and limits (requests 100m/256Mi, limits 500m/512Mi) and a CPU-based (70%) Horizontal Pod Autoscaler for the GreenPay Helm chart (#1209).
 - Smart Contracts section in `CONTRIBUTING.md` covering Soroban test/build/WASM/deploy workflows and linking the deployment and integration docs (#1281).
 - Authentication section in `docs/api.md` documenting the JWT Bearer scheme, login/refresh flow, `X-Admin-Key` and wallet-signed alternatives, a curl example, and a public-vs-authenticated endpoint table (#1283).

@@ -73,6 +73,33 @@
       scroll-behavior: auto !important;
     }
   }
+
+  /* ── Direction & RTL support (#1318) ───────────────────────────────── */
+  html[dir="rtl"],
+  [dir="rtl"] {
+    direction: rtl;
+    text-align: start;
+  }
+
+  html[dir="ltr"],
+  [dir="ltr"] {
+    direction: ltr;
+    text-align: start;
+  }
+
+  /* Logical CSS property helpers (#1318) */
+  .ms-auto {
+    margin-inline-start: auto;
+  }
+  .me-auto {
+    margin-inline-end: auto;
+  }
+  .start-0 {
+    inset-inline-start: 0;
+  }
+  .end-0 {
+    inset-inline-end: 0;
+  }
 }
 
 @layer components {

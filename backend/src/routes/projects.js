@@ -8,6 +8,7 @@ const router = express.Router();
 const { v4: uuid } = require("uuid");
 const QRCode = require("qrcode");
 const pool = require("../db/pool");
+const logger = require("../logger");
 const { logAdminAction } = require("../services/audit");
 const { mapProjectRow, mapProjectMilestoneRow, updateWebhook, computeBadges } = require("../services/store");
 const {
@@ -396,7 +397,9 @@ where.push(
     values.push(pageSize + 1);
     const limitIdx = values.length;
 
-    let query = "SELECT * FROM projects ";
+    let query = `SELECT projects.*,
+      COALESCE((SELECT SUM(d.amount) FROM donations d WHERE d.project_id = projects.id AND d.currency = 'USDC'), 0) AS raised_usdc
+      FROM projects `;
     if (where.length) {
       query += "WHERE " + where.join(" AND ") + " ";
     }
@@ -602,7 +605,7 @@ router.get("/:id/verify", async (req, res) => {
       },
     });
   } catch (err) {
-    console.error(`[verify] Error checking on-chain status for project ${req.params.id}:`, err);
+    logger.error({ event: "project_verify_onchain_error", projectId: req.params.id, err }, `[verify] Error checking on-chain status for project ${req.params.id}: ${err.message}`);
     res.status(500).json({
       success: false,
       error: "Failed to verify on-chain status",
@@ -1117,7 +1120,9 @@ router.get("/:id", async (req, res, next) => {
     }
 
     const projectResult = await pool.query(
-      "SELECT * FROM projects WHERE id = $1",
+      `SELECT projects.*,
+         COALESCE((SELECT SUM(d.amount) FROM donations d WHERE d.project_id = projects.id AND d.currency = 'USDC'), 0) AS raised_usdc
+       FROM projects WHERE id = $1`,
       [req.params.id],
     );
     if (!projectResult.rows[0])

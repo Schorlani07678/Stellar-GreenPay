@@ -1,6 +1,7 @@
 "use strict";
 
 const Sentry = require("@sentry/node");
+const logger = require("../logger");
 
 function initSentry(app) {
   if (!process.env.SENTRY_DSN) return Sentry;
@@ -15,13 +16,13 @@ function initSentry(app) {
 
   process.on("uncaughtException", (err) => {
     Sentry.captureException(err);
-    console.error("[Uncaught Exception]", err.message);
+    logger.fatal({ event: "uncaught_exception", err }, `[Uncaught Exception] ${err.message}`);
     process.exit(1);
   });
 
   process.on("unhandledRejection", (reason) => {
     Sentry.captureException(reason);
-    console.error("[Unhandled Rejection]", reason);
+    logger.error({ event: "unhandled_rejection", reason }, "[Unhandled Rejection]");
   });
 
   app.use(Sentry.Handlers.requestHandler());

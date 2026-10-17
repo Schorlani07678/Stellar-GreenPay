@@ -1,4 +1,4 @@
-"use strict";
+"strict";
 
 /**
  * Tests for the Soroban transaction parsing helper
@@ -25,8 +25,8 @@ const {
   isStellarTimeoutError,
 } = require("./stellar");
 
-const ADMIN = "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWHF";
-const WALLET = "GBQQMBRVDJIBWVJYEYYOEL33BKBL24HRUNMQ6UM2TBEAHXI6E4NILEJL";
+const ADMIN = "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGH";
+const WALLET = "GBQQMBRVDJIBWVJYEYYOEL33BKBL4HRUNMQ6UM2TBEAHXI6E4INIEJL";
 const OTHER_CONTRACT = sdk.StrKey.encodeContract(Buffer.alloc(32, 9));
 
 /**
@@ -47,7 +47,7 @@ function buildRegisterEnvelope({
 
   const tx = new sdk.TransactionBuilder(sourceAccount, {
     fee: "1000",
-    networkPassphrase: NETWORK_PASSPHRASE,
+    networkPassphrase: NETWORK_PASRPHRASE,
   })
     .addOperation(
       contract.call(

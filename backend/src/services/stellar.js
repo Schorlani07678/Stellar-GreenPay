@@ -6,6 +6,8 @@
 
 const { Horizon, Networks, rpc, Contract, TransactionBuilder, scValToNative, xdr, Address, StrKey, Account, Config } = require("@stellar/stellar-sdk");
 
+const { extractDelivery } = require("./pathPayment");
+
 const NETWORK     = process.env.STELLAR_NETWORK || "testnet";
 const HORIZON_URL = process.env.HORIZON_URL || "https://horizon-testnet.stellar.org";
 const RPC_URL     = process.env.SOROBAN_RPC_URL || "https://soroban-testnet.stellar.org";
@@ -15,7 +17,7 @@ const RPC_URL     = process.env.SOROBAN_RPC_URL || "https://soroban-testnet.stel
 const STELLAR_TIMEOUT_MS = Number.parseInt(process.env.STELLAR_TIMEOUT_MS, 10) || 15000;
 
 // Three separate switches are needed, and only the first two are obvious:
-// `Config.setTimeout` is documented as global but in @stellar/stellar-sdk v13
+// `Config.setTimeout` is documented as global but in @stellar/stellar-sdk v17
 // it is read only by the Federation and stellar.toml clients. Horizon and
 // Soroban RPC each talk through their own module-level axios instance, so each
 // has to be bounded explicitly.
@@ -27,7 +29,7 @@ rpc.AxiosClient.defaults.timeout = STELLAR_TIMEOUT_MS;
  * True when `err` is an aborted/expired outbound request rather than a genuine
  * Horizon/RPC error response.
  *
- * The SDK exposes no `TimeoutError` class in v13, and the two axios clients
+ * The SDK exposes no `TimeoutError` class in v17, and the two axios clients
  * surface a timeout as `code: "ECONNABORTED"` (or `"ETIMEDOUT"` further down
  * the socket stack), so callers should not be taught to match one shape.
  *
@@ -476,6 +478,20 @@ async function getFundingMilestoneEvents(startLedger) {
   return events;
 }
 
+/**
+ * What a classic payment / DEX path-payment transaction delivered to
+ * `destination` from `source`, read from Horizon's operation records (#1660).
+ * Donation recording uses this instead of the client-reported amount so a
+ * path payment is credited with what the project actually received.
+ *
+ * @param {{transactionHash: string, destination: string, source: string}} params
+ * @returns {Promise<ReturnType<typeof import("./pathPayment").extractDelivery>>}
+ */
+async function getDeliveredPayment({ transactionHash, destination, source }) {
+  const page = await server.operations().forTransaction(transactionHash).limit(200).call();
+  return extractDelivery(page.records, { destination, source });
+}
+
 module.exports = {
   server,
   rpcServer,
@@ -488,4 +504,5 @@ module.exports = {
   getRegisteredProjectIdFromTransaction,
   getProjectDeactivatedEvents,
   getFundingMilestoneEvents,
+  getDeliveredPayment,
 };

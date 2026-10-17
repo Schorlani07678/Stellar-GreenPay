@@ -1,9 +1,14 @@
 # 🌱 Stellar GreenPay
 
+> **Prerequisite:** Node.js >= 20 (required by the Express 5 backend). Run `nvm use` and it picks up the version automatically — `.nvmrc` is the single source of truth.
+
 > Donate directly to verified climate projects using XLM — every transaction tracked on-chain.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Discord](https://img.shields.io/badge/Discord-%23greenpay-5865F2?logo=discord&logoColor=white)](https://discord.gg/greenpay)
+[![Telegram](https://img.shields.io/badge/Telegram-GreenPay%20Community-24A1DE?logo=telegram&logoColor=white)](https://t.me/greenpay_stellar)
+[![Hacktoberfest](https://img.shields.io/badge/Hacktoberfest-2026-orange?logo=hacktoberfest&logoColor=white)](https://hacktoberfest.com)
 [![Stellar](https://img.shields.io/badge/Stellar-Testnet-blue)](https://stellar.org)
 [![Soroban](https://img.shields.io/badge/Soroban-Smart%20Contracts-green)](https://soroban.stellar.org)
 [![Backend Coverage](https://codecov.io/gh/Emmy123222/Stellar-GreenPay/branch/main/graph/badge.svg?flag=backend)](https://codecov.io/gh/Emmy123222/Stellar-GreenPay)
@@ -137,6 +142,16 @@ ALLOWED_ORIGINS=http://localhost:3000
 ## 🤝 Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). All skill levels welcome!
+
+### 💬 Community & Discussion
+
+Join the GreenPay contributor community to ask questions, share ideas, or coordinate contributions:
+- **Discord**: Join our [#greenpay](https://discord.gg/greenpay) Discord channel for developer discussions and support.
+- **Telegram**: Join our [GreenPay Community Group](https://t.me/greenpay_stellar) for real-time chat and announcements.
+
+### 🎃 Hacktoberfest
+
+GreenPay proudly participates in [Hacktoberfest](https://hacktoberfest.com)! Issues suited for first-time and intermediate contributors are tagged with `hacktoberfest` and `good-first-issue`. See our [Hacktoberfest section in CONTRIBUTING.md](CONTRIBUTING.md#hacktoberfest) for guidelines on how to participate and get your PRs merged!
 
 See [CHANGELOG.md](CHANGELOG.md) for the release history.
 

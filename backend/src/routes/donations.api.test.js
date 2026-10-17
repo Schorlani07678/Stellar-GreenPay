@@ -50,7 +50,6 @@ const http = require("http");
 const request = require("supertest");
 const donationsRouter = require("./donations");
 const projectsRouter = require("./projects");
-const donationsRouter = require("./donations");
 
 // Test helpers used across donation tests
 function makePublicKey(char = "A") {
@@ -78,16 +77,6 @@ function createMockClient(...responses) {
   return client;
 }
 
-const MOCK_PROJECT = { id: "proj-1", name: "Test Project" };
-
-const MOCK_DONATION_ROW = {
-  id: "don-1",
-  amount_xlm: "250.0000000",
-  message: "Keep it up!",
-  transaction_hash: "abc123def456abc123def456abc123def456abc123def456abc123def456abc1",
-  created_at: new Date("2025-06-01T12:00:00Z").toISOString(),
-};
-
 function buildApp() {
   const app = express();
   app.use(express.json());
@@ -102,37 +91,6 @@ function buildApp() {
     res.status(err.status || 500).json({ error: err.message || "Internal server error" });
   });
   return app;
-}
-
-function makePublicKey(char = "A") {
-  return `G${char.repeat(55)}`;
-}
-
-function makeTxHash(char = "a") {
-  return char.repeat(64);
-}
-
-function queryResult(rows = []) {
-  return { rows };
-}
-
-function createMockClient(...responses) {
-  const client = {
-    query: jest.fn(),
-    release: jest.fn(),
-  };
-
-  responses.forEach((response) => {
-    if (response instanceof Error) {
-      client.query.mockRejectedValueOnce(response);
-      return;
-    }
-
-    client.query.mockResolvedValueOnce(response);
-  });
-
-  pool.connect.mockResolvedValue(client);
-  return client;
 }
 
 const MOCK_PROJECT_ROW = {
@@ -182,7 +140,7 @@ describe("POST /api/donations", () => {
       transaction_hash: transactionHash,
     };
 
-    createMockClient(
+    const client = createMockClient(
       queryResult([{ id: "proj-1" }]), // projectResult
       queryResult([]), // existingResult (no dup by tx hash)
       queryResult(), // BEGIN
@@ -208,6 +166,48 @@ describe("POST /api/donations", () => {
     expect(res.body.success).toBe(true);
     expect(res.body.data.projectId).toBe("proj-1");
     expect(res.body.data.donorAddress).toBe(donorAddress);
+  });
+
+  test("persists the issued asset identity for a USDC donation", async () => {
+    const donorAddress = makePublicKey("A");
+    const transactionHash = makeTxHash("b");
+    const assetIssuer = makePublicKey("B");
+    const donationRow = {
+      ...MOCK_DONATION_ROW,
+      donor_address: donorAddress,
+      transaction_hash: transactionHash,
+      amount_xlm: null,
+      amount: "12.5",
+      currency: "USDC",
+      asset_code: "USDC",
+      asset_issuer: assetIssuer,
+    };
+    const client = createMockClient(
+      queryResult([{ id: "proj-1", co2_per_xlm: "2", name: "Test" }]),
+      queryResult([]),
+      queryResult(),
+      queryResult([{ total: "0" }]),
+      queryResult([donationRow]),
+      queryResult(), // project total update
+      queryResult([{ count: 1 }]),
+      queryResult([]),
+      queryResult(),
+    );
+
+    const res = await request(app).post("/api/donations").send({
+      projectId: "proj-1",
+      donorAddress,
+      amount: "12.5",
+      currency: "USDC",
+      assetCode: "USDC",
+      assetIssuer,
+      transactionHash,
+    }).expect(201);
+
+    expect(res.body.data).toMatchObject({ currency: "USDC", assetCode: "USDC", assetIssuer });
+    const insert = client.query.mock.calls.find(([sql]) => String(sql).includes("INSERT INTO donations"));
+    expect(insert[0]).toContain("asset_code, asset_issuer");
+    expect(insert[1]).toContain(assetIssuer);
   });
 
   test.each([
